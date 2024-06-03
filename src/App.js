@@ -69,8 +69,8 @@ const efficiencybarChartData = [
     { name: 'Operator 3', value: 0 , color: "#FF0000"},
 ];
 const pieChartData = [
-    { name: 'Idle state (Machine ON)', value: idleStateCount, color: '#7c76bb' },
-    { name: 'Machine ON (under load)', value: machineOnCount, color: '#91dabd' },
+    { name: 'Idle state (Machine ON)', value: idleStateCount, color: '#91dabd' },
+    { name: 'Machine ON (under load)', value: machineOnCount, color: '#ffa500' },
     { name: 'Machine OFF', value: off, color: '#FF0000' },
 ];
 
@@ -230,8 +230,8 @@ const pieChartData = [
                         outerRadius={80}
                         label
                     >
-                        <Cell key={`cell-on`} fill="#7c76bb" />
-                        <Cell key={`cell-off`} fill="#91dabd" />
+                        <Cell key={`cell-on`} fill="#91dabd" />
+                        <Cell key={`cell-off`} fill="#d85e5e" />
                     </Pie>
                     <Tooltip />
                     <Legend />
