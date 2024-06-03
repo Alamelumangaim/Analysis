@@ -1,105 +1,140 @@
-import { useEffect, useState } from 'react'
-import axios from 'axios'; // Import Axios
-import { LineChart, Line } from 'recharts';
-import { BarChart, Bar, Rectangle, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import { PieChart, Pie } from 'recharts';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar } from 'recharts';
+import menu from './images/menu.png';
+import machine from './images/gears-set.png';
+import idle from './images/hourglass.png';
+import on from './images/check.png';
+import off from './images/power-settings.png';
+
 export default function FetchCSVData(props) {
-    const [csvData, setCsvData] = useState([]);
-    const data = csvData;
+  const [csvData, setCsvData] = useState([]);
+  const [selectedMenu, setSelectedMenu] = useState('');
+  const [chartData, setChartData] = useState([]);
 
-    useEffect(() => {
-        fetchCSVData();    // Fetch the CSV data when the component mounts
-    }, []); // The empty array ensures that this effect runs only once, like componentDidMount
-    const filterDataByState = (state) => {
-        return csvData.filter(row => row.STATUS === state).length;
-    }
+  useEffect(() => {
+    fetchCSVData();
+  }, []);
 
-    const idleStateCount = filterDataByState('Idle State (Machine ON)');
-    const machineOnCount = filterDataByState('Machine ON (Under Load)');
-    const machineOffCount = filterDataByState('Machine OFF');
-
-    const barChartData = [
-        { name: 'Idle state (Machine ON)', value: idleStateCount },
-        { name: 'Machine ON(under load)', value: machineOnCount },
-        { name: 'Machine OFF', value: machineOffCount },
-    ];
-    const pieChartData = [
-        { name: 'Idle state (Machine ON)', value: idleStateCount },
-        { name: 'Machine ON(under load)', value: machineOnCount },
-        { name: 'Machine OFF', value: machineOffCount },
-    ];
-
-    const fetchCSVData = () => {
-    const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTpi1On88FpEAJRgflIfhot51gry9onJvTG8wmXEYlPmIOf-taLRZWUJNBvZPAaEIbrmrGyITq4rzm5/pub?output=csv'; // Replace with your Google Sheets CSV file URL
-
-        axios.get(csvUrl)    // Use Axios to fetch the CSV data
-            .then((response) => {
-                const parsedCsvData = parseCSV(response.data);        // Parse the CSV data into an array of objects
-                setCsvData(parsedCsvData);        // Set the fetched data in the component's state
-                console.log(parsedCsvData);        // Now you can work with 'csvData' in your component's state.
-            })
-            .catch((error) => {
-                console.error('Error fetching CSV data:', error);
-            });
-    }
-
-    function parseCSV(csvText) {
-        const rows = csvText.split(/\r?\n/);        // Use a regular expression to split the CSV text into rows while handling '\r'
-        const headers = rows[0].split(',');        // Extract headers (assumes the first row is the header row)
-        const data = [];        // Initialize an array to store the parsed data
-        for (let i = 1; i < rows.length; i++) {
-            const rowData = rows[i].split(',');          // Use the regular expression to split the row while handling '\r'
-            const rowObject = {};
-            for (let j = 0; j < headers.length; j++) {
-                rowObject[headers[j]] = rowData[j];
-            }
-            data.push(rowObject);
-        }
-        return data;
-    }
-    return (
-      <div>
-          <p className='p'>DASHBOARD</p>
-          <div>
-          <LineChart width={1500} height={300} data={csvData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="TIME" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="CURRENT" stroke="#8884d8" />
-            </LineChart>
-          </div>
-         
-          <div className='chart'>
-            <div>
-            <BarChart
-                width={600}
-                height={400}
-                data={barChartData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-            >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="value" fill="#8884d8" />
-            </BarChart>
-            </div>
-            <div>
-            <PieChart width={400} height={400}>
-                <Pie data={pieChartData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} fill="#8884d8" label />
-                <Tooltip />
-                <Legend />
-            </PieChart>
-        </div>
-        </div>
+  const handleMenuClick = (menu) => {
+    setSelectedMenu(menu);
+    if (menu) {
+        console.log(menu);
         
+      const filteredData = csvData.filter(row => row.State === menu);
+      setChartData(filteredData);
+      console.log(chartData);
+    }
+  };
+
+  const preprocessData = (data) => {
+    return data.map(row => {
+      let color;
+      switch (row.STATUS) {
+        case 'Machine ON (Under Load)':
+          color = '#00FF00'; // Green
+          break;
+        case 'Machine OFF':
+          color = '#FF0000'; // Red
+          break;
+        case 'Idle State (Machine ON)':
+          color = '#FFFF00'; // Yellow
+          break;
+        default:
+          color = '#8884d8'; // Default color
+      }
+      return { ...row, color };
+    });
+  }
+
+  const fetchCSVData = () => {
+    const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRMNz4UWSqqVJWkYJTTds7Qos5xS2dAfZpkqUFB-KOlkNMNoZBNXK__pYEvb4egPG5eNWXQOUxB0Wtj/pub?output=csv';
+    
+    axios.get(csvUrl)
+      .then((response) => {
+        const parsedCsvData = preprocessData(parseCSV(response.data));
+        setCsvData(parsedCsvData);
+        console.log(csvData);
+      })
+      .catch((error) => {
+        console.error('Error fetching CSV data:', error);
+      });
+  }
+
+  function parseCSV(csvText) {
+    const rows = csvText.split(/\r?\n/);
+    const headers = rows[0].split(',');
+    const data = [];
+    for (let i = 1; i < rows.length; i++) {
+      const rowData = rows[i].split(',');
+      const rowObject = {};
+      for (let j = 0; j < headers.length; j++) {
+        rowObject[headers[j]] = rowData[j];
+      }
+      data.push(rowObject);
+    }
+    return data;
+  }
+
+  const CustomTooltip = ({ active, payload }) => {
+    if (active && payload && payload.length) {
+      const { Time, Current, State, color } = payload[0].payload;
+      return (
+        <div className="custom-tooltip">
+          <div className="box">
+            <span className="color-box" style={{ backgroundColor: color }} />
+            <span>{`${State}`}</span>
+          </div>
+          <p className="label">{`Time: ${Time}`}</p>
+          <p className="label">{`Current: ${Current}`}</p>
+        </div>
+      );
+    }
+    return null;
+  };
+
+  return (
+    <div className='main'>
+      <div className="sidebar">
+        <h2 className='menubar'><img src={menu} alt="Menu Icon" /> Menu</h2>
+        <ul>
+          <li className="dropdown">
+            <span className="dropbtn"><img src={machine} />Machines</span>
+            <div className="dropdown-content">
+              <a href="#">Machine 1</a>
+              <a href="#">Machine 2</a>
+              <a href="#">Machine 3</a>
+              <a href="#">Machine 4</a>
+              <a href="#">Machine 5</a>
+            </div>
+          </li>
+          <li className='idle' onClick={() => handleMenuClick('Idle State (Machine ON)')}><img src={idle} />Idle State</li>
+          <li className='idle' onClick={() => handleMenuClick('Machine ON (Under Load)')}><img src={on} />Load State</li>
+          <li className='idle' onClick={() => handleMenuClick('Machine OFF')}><img src={off} />Machine OFF</li>
+        </ul>
       </div>
-      
-      
-
+      <div className='graph'>
+        {selectedMenu && (
+          <div className="chart">
+            <LineChart width={500} height={300} data={chartData}>
+              <XAxis dataKey="Time" />
+              <YAxis />
+              <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+              <Line type="monotone" dataKey="Current" stroke="#8884d8" />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend />
+            </LineChart>
+            <BarChart width={500} height={300} data={chartData}>
+              <XAxis dataKey="Time" />
+              <YAxis />
+              <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+              <Bar dataKey="Current" fill="#8884d8" />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend />
+            </BarChart>
+          </div>
+        )}
+      </div>
+    </div>
   );
-
 }

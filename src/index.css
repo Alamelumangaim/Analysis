@@ -31,3 +31,129 @@ code {
   font-family: julius-sans-one-regular;
   color: rgb(46, 22, 69);
 }
+.color-box {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  margin-right: 5px;
+}
+.box{
+  width: 130px;
+}
+.custom-tooltip{
+  background-color: #f1f1f1;
+  padding-left: 15px;
+}
+.main{
+  display: flex;
+  flex-direction: row;
+}
+.menu{
+  width: 20%;
+  height:100vh;
+  background-color: rgb(63, 7, 115);
+}
+.graph{
+  width: 70%;
+}
+/* Add this CSS to your stylesheet */
+body {
+  font-family: Arial, sans-serif;
+}
+
+.dashboard-container {
+  display: flex;
+}
+
+.sidebar {
+  color: white;
+  width: 20%;
+  height:100vh;
+  background-color: rgb(63, 7, 115);
+  padding: 20px;
+}
+
+.sidebar h2 {
+  color: white;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.sidebar ul li:hover {
+  background-color: #3a375c;
+}
+
+.content {
+  flex: 1;
+  padding: 20px;
+}
+
+.custom-tooltip {
+  background: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 3px;
+}
+
+.custom-tooltip .label {
+  margin: 0;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  cursor: pointer;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.dropdown-content a:hover {
+  background-color: #f1f1f1;
+  border-radius: 10px;
+  border: none;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown:hover .dropbtn {
+  background-color: #3a375c;
+  border-radius: 10px;
+}
+.menubar{
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+.dropbtn{
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+.idle{
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+.graph{
+  display: flex;
+  align-items: center;
+}
