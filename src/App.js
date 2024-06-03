@@ -241,7 +241,7 @@ const pieChartData = [
                 
                 )}
                 
-            {(selectedMachine === 'Machine 1') && (selectedState === 'Machine ON (Under Load)' || selectedState === 'Idle State (Machine ON)') && (
+            {(selectedMachine === 'Machine 1') && (selectedState === 'Machine ON (Under Load)') && (
                 <div className='graph1'>
                     <div className='text'>
                         <p>Current vs Time</p>
@@ -261,6 +261,33 @@ const pieChartData = [
                         <YAxis />
                         <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
                         <Bar dataKey="Current" fill="#ffa500" />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Legend />
+                    </BarChart>
+                    </div>
+                </div>
+                
+            )}
+            {(selectedMachine === 'Machine 1') && (selectedState === 'Idle State (Machine ON)') && (
+                <div className='graph1'>
+                    <div className='text'>
+                        <p>Current vs Time</p>
+                    </div>
+                    <div className="chart">
+                    
+                    <LineChart width={500} height={300} data={chartData}>
+                        <XAxis dataKey="Time"/>
+                        <YAxis/>
+                        <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+                        <Line type="monotone" dataKey="Current" stroke="#91dabd" />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Legend />
+                    </LineChart>
+                    <BarChart width={500} height={300} data={chartData}>
+                        <XAxis dataKey="Time" />
+                        <YAxis />
+                        <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+                        <Bar dataKey="Current" fill="#91dabd" />
                         <Tooltip content={<CustomTooltip />} />
                         <Legend />
                     </BarChart>
