@@ -12,6 +12,7 @@ import status from './images/status.png';
 import analytics from './images/analytics.png';
 import efficiency from './images/efficiency.png';
 import calendar from './images/calendar.png';
+import uparrow from './images/arrow.png';
 export default function FetchCSVData(props) {
   const [csvData, setCsvData] = useState([]);
   const [selectedMachine, setSelectedMachine] = useState('');
@@ -28,7 +29,6 @@ export default function FetchCSVData(props) {
     setSelectedMachine(machine);
     setSelectedState('');
     setMachineOffCount(0);
-    // Close the dropdown after selecting a machine
     setIsDropdownOpen(false);
   };
 
@@ -137,7 +137,7 @@ export default function FetchCSVData(props) {
             <li className='idle' onClick={() => handleStateClick('Downtime Analysis')}><img src={analytics} />Downtime Analysis</li>
             <li className='idle'><img src={efficiency} />Production Efficiency</li>
             <li className='idle'><img src={calendar} />Maintenance Schedule</li>
-            
+            <li className='idle' onClick={() => handleStateClick('Machine Status')}><img src={status} /> Machine Status</li>
 
 
 
@@ -186,16 +186,17 @@ export default function FetchCSVData(props) {
             </div>
             
             )}
-        {selectedMachine && (selectedState === 'Idle State (Machine ON)' || selectedState === 'Machine ON (Under Load)') && (
+        {(selectedMachine === 'Machine 1') && (selectedState === 'Idle State (Machine ON)' || selectedState === 'Machine ON (Under Load)') && (
           
             <div className="chart">
               <LineChart width={500} height={300} data={chartData}>
-                <XAxis dataKey="Time" />
-                <YAxis />
+                <XAxis dataKey="Time"/>
+                <YAxis/>
                 <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
                 <Line type="monotone" dataKey="Current" stroke="#ffa500" />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />
+                
               </LineChart>
               <BarChart width={500} height={300} data={chartData}>
                 <XAxis dataKey="Time" />
@@ -210,14 +211,32 @@ export default function FetchCSVData(props) {
         )}
         {selectedState === 'Downtime Analysis' && (
             <div>
-                <LineChart width={1100} height={300} data={csvData}>
-                <XAxis dataKey="Time" />
-                <YAxis />
-                <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-                <Line type="monotone" dataKey="Current" stroke="#ffa500" />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend />
-              </LineChart>
+                 <LineChart width={500} height={300} data={chartData}>
+              <XAxis type='Current' dataKey="Time" />
+              <YAxis type='Time'/>
+              <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+              <Line type="monotone" dataKey="Current" stroke="#ffa500" />
+              <Tooltip content={<CustomTooltip />} />
+              <Legend />
+            </LineChart>
+            </div>
+        )}
+        {selectedState === 'Machine Status' && (selectedMachine === 'Machine 1') && (
+            <div>
+                 <div className='card'>
+                    <img src={uparrow}/>ON
+                    
+                </div>
+            </div>
+        )}
+        {selectedState === 'Machine Status' && (selectedMachine === 'Machine 2' || selectedMachine === 'Machine 3' || selectedMachine === 'Machine 4'
+            || selectedMachine === 'Machine 5'
+        ) && (
+            <div>
+                 <div className='card'>
+                    <img src={arrow}/>OFF
+                    
+                </div>
             </div>
         )}
         </div>
