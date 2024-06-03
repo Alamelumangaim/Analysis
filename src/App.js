@@ -5,7 +5,7 @@ import menu from './images/menu.png';
 import machine from './images/gears-set.png';
 import idle from './images/hourglass.png';
 import on from './images/check.png';
-import off from './images/power-settings.png';
+import offimg from './images/power-settings.png';
 import arrow from './images/down.png';
 import logo from './images/logo.jpg';
 import status from './images/status.png';
@@ -19,8 +19,10 @@ export default function FetchCSVData(props) {
   const [selectedState, setSelectedState] = useState('');
   const [chartData, setChartData] = useState([]);
   const [machineOffCount, setMachineOffCount] = useState(0);
+//   const [idleStateCount, setIdleStateCount] = useState(0);
+//   const [machineONCount, setmachineONCount] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
+    
   useEffect(() => {
     fetchCSVData();
   }, []);
@@ -43,7 +45,35 @@ export default function FetchCSVData(props) {
     } else {
       setMachineOffCount(0);
     }
+   
   };
+  const filterDataByState = (state) => {
+    // const count = csvData.filter(row => {
+    //     console.log(row.State);
+    // })
+    return csvData.filter(row => row.State === state).length;
+}
+
+const idleStateCount = filterDataByState('Idle State (Machine ON)');
+const machineOnCount = filterDataByState('Machine ON (Under Load)');
+const off = filterDataByState('Machine OFF');
+
+const barChartData = [
+    { name: 'Idle state', value: idleStateCount,color:'#ffff00' },
+    { name: 'Machine ON(under load)', value: machineOnCount,color:'#00FF00' },
+    { name: 'Machine OFF', value: off , color: "#FF0000"},
+];
+const efficiencybarChartData = [
+    { name: 'Operator 1', value: 100,color:'#ffff00' },
+    { name: 'Operator 2', value: 0,color:'#00FF00' },
+    { name: 'Operator 3', value: 0 , color: "#FF0000"},
+];
+const pieChartData = [
+    { name: 'Idle state (Machine ON)', value: idleStateCount, color: '#ffff00' },
+    { name: 'Machine ON (under load)', value: machineOnCount, color: '#00FF00' },
+    { name: 'Machine OFF', value: off, color: '#FF0000' },
+];
+
 
   const preprocessData = (data) => {
     return data.map(row => {
@@ -130,14 +160,14 @@ export default function FetchCSVData(props) {
         )}
         {selectedMachine && (
           <ul>
+             <li className='idle' onClick={() => handleStateClick('Machine Status')}><img src={status} /> Machine Status</li>
             <li className='idle' onClick={() => handleStateClick('Idle State (Machine ON)')}><img src={idle} />Idle State</li>
             <li className='idle' onClick={() => handleStateClick('Machine ON (Under Load)')}><img src={on} />Load State</li>
-            <li className='idle' onClick={() => handleStateClick('Machine OFF')}><img src={off} />Machine OFF</li>
-            <li className='idle'><img src={status} />Equipment Status</li>
+            <li className='idle' onClick={() => handleStateClick('Machine OFF')}><img src={offimg} />Machine OFF</li>
             <li className='idle' onClick={() => handleStateClick('Downtime Analysis')}><img src={analytics} />Downtime Analysis</li>
-            <li className='idle'><img src={efficiency} />Production Efficiency</li>
-            <li className='idle'><img src={calendar} />Maintenance Schedule</li>
-            <li className='idle' onClick={() => handleStateClick('Machine Status')}><img src={status} /> Machine Status</li>
+            <li className='idle' onClick={() => handleStateClick('Efficiency')}><img src={efficiency} />Production Efficiency</li>
+            {/* <li className='idle'><img src={calendar} />Maintenance Schedule</li> */}
+           
 
 
 
@@ -150,6 +180,7 @@ export default function FetchCSVData(props) {
             </div>
       
             <div className='graph'>
+                
         
             {(selectedMachine === '' || selectedState === '') &&(
                 <div className='page'>
@@ -159,6 +190,23 @@ export default function FetchCSVData(props) {
                         
                     </div>
                     <p className='p'>To enable businesses to leverage the power of technology to drive innovation, efficiency, and growth.</p>
+                </div>
+            )}
+            {(selectedState === 'Efficiency') &&(
+                <div>
+                    <BarChart
+                            width={600}
+                            height={400}
+                            data={efficiencybarChartData}
+                            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="value" fill="#91dabd" />
+                        </BarChart>
                 </div>
             )}
             
@@ -192,7 +240,8 @@ export default function FetchCSVData(props) {
                 </div>
                 
                 )}
-            {(selectedMachine === 'Machine 1') && (selectedState === 'Idle State (Machine ON)' || selectedState === 'Machine ON (Under Load)') && (
+                
+            {(selectedMachine === 'Machine 1') && (selectedState === 'Machine ON (Under Load)' || selectedState === 'Idle State (Machine ON)') && (
                 <div className='graph1'>
                     <div className='text'>
                         <p>Current vs Time</p>
@@ -231,11 +280,45 @@ export default function FetchCSVData(props) {
                 </LineChart>
                 </div>
             )}
+            
             {selectedState === 'Machine Status' && (selectedMachine === 'Machine 1') && (
-                <div>
+                <div className='status'>
                     <div className='card'>
                         <img src={uparrow}/>ON
                         
+                    </div>
+                    <div className="chart1">
+                        <BarChart
+                            width={600}
+                            height={400}
+                            data={barChartData}
+                            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="value" fill="#91dabd" />
+                        </BarChart>
+                        <PieChart width={400} height={400}>
+                            <Pie
+                                data={pieChartData}
+                                dataKey="value"
+                                nameKey="name"
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={100}
+                                label
+                            >
+                                {pieChartData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                                ))}
+                            </Pie>
+                            <Tooltip />
+                            <Legend />
+                            </PieChart>
+
                     </div>
                 </div>
             )}
@@ -247,6 +330,39 @@ export default function FetchCSVData(props) {
                         <img src={arrow}/>OFF
                         
                     </div>
+                    <div className="chart1">
+                    <BarChart
+                            width={600}
+                            height={400}
+                            data={barChartData}
+                            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                        >
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="name" />
+                            <YAxis />
+                            <Tooltip />
+                            <Legend />
+                            <Bar dataKey="value" fill="#91dabd" />
+                        </BarChart>
+                        <PieChart width={400} height={400}>
+                            <Pie
+                                data={pieChartData}
+                                dataKey="value"
+                                nameKey="name"
+                                cx="50%"
+                                cy="50%"
+                                outerRadius={100}
+                                label
+                            >
+                                {pieChartData.map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={entry.color} />
+                                ))}
+                            </Pie>
+                            <Tooltip />
+                            <Legend />
+                            </PieChart>
+
+                    </div>
                 </div>
             )}
             {
@@ -257,6 +373,7 @@ export default function FetchCSVData(props) {
                         <img src={arrow}/>No data
                         
                     </div>
+                    
                     </div>
                 )
             }

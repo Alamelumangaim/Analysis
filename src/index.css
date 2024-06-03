@@ -172,9 +172,10 @@ body {
   align-items: center;
   
 }
-.right{
+.status{
   display: flex;
   justify-content: center;
+  flex-direction: column;
 }
 .offcard{
   display: flex;
@@ -218,4 +219,11 @@ body {
 .text{
   text-align: center;
   color: #3a375c;
+}
+.chart1{
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
