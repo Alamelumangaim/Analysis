@@ -13,6 +13,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: rgb(255, 255, 255);
+  /* color: #91dabd; */
 }
 
 code {
@@ -89,6 +90,7 @@ body {
 
 .sidebar ul li:hover {
   background-color: #3a375c;
+  
 }
 
 .content {
@@ -156,4 +158,45 @@ body {
 .graph{
   display: flex;
   align-items: center;
+  justify-content: center;
+}
+.card{
+  display: flex;
+  width: 200px;
+  justify-content: center;
+  border: none;
+  background-color: #f1f1f1;
+  box-shadow: 0 0 0 2px;
+  border-radius: 10px;
+  padding: 10px;
+  align-items: center;
+  
+}
+.right{
+  display: flex;
+  justify-content: center;
+}
+.offcard{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 40px;
+}
+.mainPage{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+.p{
+  padding: 30px;
+  background-color: #f1f1f1;
+  border-radius: 10px;
+  font-size: large;
+}
+.page{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
 }
