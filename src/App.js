@@ -69,8 +69,8 @@ const efficiencybarChartData = [
     { name: 'Operator 3', value: 0 , color: "#FF0000"},
 ];
 const pieChartData = [
-    { name: 'Idle state (Machine ON)', value: idleStateCount, color: '#ffff00' },
-    { name: 'Machine ON (under load)', value: machineOnCount, color: '#00FF00' },
+    { name: 'Idle state (Machine ON)', value: idleStateCount, color: '#7c76bb' },
+    { name: 'Machine ON (under load)', value: machineOnCount, color: '#91dabd' },
     { name: 'Machine OFF', value: off, color: '#FF0000' },
 ];
 
