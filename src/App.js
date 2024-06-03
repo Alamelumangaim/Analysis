@@ -196,7 +196,6 @@ export default function FetchCSVData(props) {
                 <Line type="monotone" dataKey="Current" stroke="#ffa500" />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend />
-                
               </LineChart>
               <BarChart width={500} height={300} data={chartData}>
                 <XAxis dataKey="Time" />
@@ -211,14 +210,14 @@ export default function FetchCSVData(props) {
         )}
         {selectedState === 'Downtime Analysis' && (
             <div>
-                 <LineChart width={500} height={300} data={chartData}>
-              <XAxis type='Current' dataKey="Time" />
-              <YAxis type='Time'/>
-              <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-              <Line type="monotone" dataKey="Current" stroke="#ffa500" />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend />
-            </LineChart>
+                <LineChart width={1100} height={300} data={csvData}>
+                <XAxis dataKey="Time" />
+                <YAxis />
+                <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+                <Line type="monotone" dataKey="Current" stroke="#ffa500" />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
+              </LineChart>
             </div>
         )}
         {selectedState === 'Machine Status' && (selectedMachine === 'Machine 1') && (
@@ -239,6 +238,18 @@ export default function FetchCSVData(props) {
                 </div>
             </div>
         )}
+         {
+            (selectedState === 'Idle State (Machine ON)' || selectedState === 'Machine ON (Under Load)') && (selectedMachine === 'Machine 2' || selectedMachine === 'Machine 3' || selectedMachine === 'Machine 4'
+            || selectedMachine === 'Machine 5') && (
+                <div>
+                    <div className='card'>
+                    <img src={arrow}/>No data
+                    
+                </div>
+                </div>
+            )
+        }
+
         </div>
         
     </div>
