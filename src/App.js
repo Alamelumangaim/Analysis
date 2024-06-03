@@ -144,112 +144,124 @@ export default function FetchCSVData(props) {
           </ul>
         )}
       </div>
-      <div className='graph'>
-        {(selectedMachine === '' || selectedState === '') &&(
-            <div className='page'>
-                <div className='mainPage'>
-                    <img src={logo}/>
-                    <h1>CURRENT SIGNATURE ANALYSIS</h1>
-                    
-                </div>
-                <p className='p'>To enable businesses to leverage the power of technology to drive innovation, efficiency, and growth.</p>
+      <div className='head'>
+            <div className='title'>
+                <h2>{`${selectedState}`}</h2>
             </div>
-        )}
+      
+            <div className='graph'>
         
-        {selectedMachine && selectedState === 'Machine OFF' && (
-                <div className='offcard'>
-                <div className='card'>
-                    <img src={arrow}/>{`${selectedMachine} was OFF for ${machineOffCount*5} seconds`}
-                    
+            {(selectedMachine === '' || selectedState === '') &&(
+                <div className='page'>
+                    <div className='mainPage'>
+                        <img src={logo}/>
+                        <h1>CURRENT SIGNATURE ANALYSIS</h1>
+                        
+                    </div>
+                    <p className='p'>To enable businesses to leverage the power of technology to drive innovation, efficiency, and growth.</p>
                 </div>
-                <div className="chart">
-                <PieChart width={500} height={260}>
-                  <Pie
-                    dataKey="value"
-                    isAnimationActive={false}
-                    data={[
-                      { name: 'Machine On', value: chartData.filter(item => item[selectedMachine] === 'ON').length },
-                      { name: 'Machine Off', value: chartData.filter(item => item[selectedMachine] === 'OFF').length },
-                    ]}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    label
-                  >
-                    <Cell key={`cell-on`} fill="#7c76bb" />
-                    <Cell key={`cell-off`} fill="#91dabd" />
-                  </Pie>
-                  <Tooltip />
-                  <Legend />
-                </PieChart>
-              </div>
-            </div>
-            
             )}
-        {(selectedMachine === 'Machine 1') && (selectedState === 'Idle State (Machine ON)' || selectedState === 'Machine ON (Under Load)') && (
-          
-            <div className="chart">
-              <LineChart width={500} height={300} data={chartData}>
-                <XAxis dataKey="Time"/>
-                <YAxis/>
-                <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-                <Line type="monotone" dataKey="Current" stroke="#ffa500" />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend />
-              </LineChart>
-              <BarChart width={500} height={300} data={chartData}>
-                <XAxis dataKey="Time" />
-                <YAxis />
-                <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-                <Bar dataKey="Current" fill="#ffa500" />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend />
-              </BarChart>
-            </div>
             
-        )}
-        {selectedState === 'Downtime Analysis' && (
-            <div>
-                <LineChart width={1100} height={300} data={csvData}>
-                <XAxis dataKey="Time" />
-                <YAxis />
-                <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-                <Line type="monotone" dataKey="Current" stroke="#ffa500" />
-                <Tooltip content={<CustomTooltip />} />
-                <Legend />
-              </LineChart>
-            </div>
-        )}
-        {selectedState === 'Machine Status' && (selectedMachine === 'Machine 1') && (
-            <div>
-                 <div className='card'>
-                    <img src={uparrow}/>ON
-                    
+            {selectedMachine && selectedState === 'Machine OFF' && (
+                    <div className='offcard'>
+                    <div className='card'>
+                        <img src={arrow}/>{`${selectedMachine} was OFF for ${machineOffCount*5} seconds`}
+                        
+                    </div>
+                    <div className="chart">
+                    <PieChart width={500} height={260}>
+                    <Pie
+                        dataKey="value"
+                        isAnimationActive={false}
+                        data={[
+                        { name: 'Machine On', value: chartData.filter(item => item[selectedMachine] === 'ON').length },
+                        { name: 'Machine Off', value: chartData.filter(item => item[selectedMachine] === 'OFF').length },
+                        ]}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={80}
+                        label
+                    >
+                        <Cell key={`cell-on`} fill="#7c76bb" />
+                        <Cell key={`cell-off`} fill="#91dabd" />
+                    </Pie>
+                    <Tooltip />
+                    <Legend />
+                    </PieChart>
                 </div>
-            </div>
-        )}
-        {selectedState === 'Machine Status' && (selectedMachine === 'Machine 2' || selectedMachine === 'Machine 3' || selectedMachine === 'Machine 4'
-            || selectedMachine === 'Machine 5'
-        ) && (
-            <div>
-                 <div className='card'>
-                    <img src={arrow}/>OFF
-                    
                 </div>
-            </div>
-        )}
-         {
-            (selectedState === 'Idle State (Machine ON)' || selectedState === 'Machine ON (Under Load)') && (selectedMachine === 'Machine 2' || selectedMachine === 'Machine 3' || selectedMachine === 'Machine 4'
-            || selectedMachine === 'Machine 5') && (
+                
+                )}
+            {(selectedMachine === 'Machine 1') && (selectedState === 'Idle State (Machine ON)' || selectedState === 'Machine ON (Under Load)') && (
+                <div className='graph1'>
+                    <div className='text'>
+                        <p>Current vs Time</p>
+                    </div>
+                    <div className="chart">
+                    
+                    <LineChart width={500} height={300} data={chartData}>
+                        <XAxis dataKey="Time"/>
+                        <YAxis/>
+                        <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+                        <Line type="monotone" dataKey="Current" stroke="#ffa500" />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Legend />
+                    </LineChart>
+                    <BarChart width={500} height={300} data={chartData}>
+                        <XAxis dataKey="Time" />
+                        <YAxis />
+                        <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+                        <Bar dataKey="Current" fill="#ffa500" />
+                        <Tooltip content={<CustomTooltip />} />
+                        <Legend />
+                    </BarChart>
+                    </div>
+                </div>
+                
+            )}
+            {selectedState === 'Downtime Analysis' && (
+                <div>
+                    <LineChart width={1100} height={300} data={csvData}>
+                    <XAxis dataKey="Time" />
+                    <YAxis />
+                    <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+                    <Line type="monotone" dataKey="Current" stroke="#ffa500" />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend />
+                </LineChart>
+                </div>
+            )}
+            {selectedState === 'Machine Status' && (selectedMachine === 'Machine 1') && (
                 <div>
                     <div className='card'>
-                    <img src={arrow}/>No data
-                    
+                        <img src={uparrow}/>ON
+                        
+                    </div>
                 </div>
+            )}
+            {selectedState === 'Machine Status' && (selectedMachine === 'Machine 2' || selectedMachine === 'Machine 3' || selectedMachine === 'Machine 4'
+                || selectedMachine === 'Machine 5'
+            ) && (
+                <div>
+                    <div className='card'>
+                        <img src={arrow}/>OFF
+                        
+                    </div>
                 </div>
-            )
-        }
+            )}
+            {
+                (selectedState === 'Idle State (Machine ON)' || selectedState === 'Machine ON (Under Load)') && (selectedMachine === 'Machine 2' || selectedMachine === 'Machine 3' || selectedMachine === 'Machine 4'
+                || selectedMachine === 'Machine 5') && (
+                    <div>
+                        <div className='card'>
+                        <img src={arrow}/>No data
+                        
+                    </div>
+                    </div>
+                )
+            }
 
+            </div>
         </div>
         
     </div>
