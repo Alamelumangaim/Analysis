@@ -185,11 +185,11 @@ const pieChartData = [
             {(selectedMachine === '' || selectedState === '') &&(
                 <div className='page'>
                     <div className='mainPage'>
-                        <img src={logo}/>
+                        {/* <img src={logo}/> */}
                         <h1>CURRENT SIGNATURE ANALYSIS</h1>
                         
                     </div>
-                    <p className='p'>To enable businesses to leverage the power of technology to drive innovation, efficiency, and growth.</p>
+                    {/* <p className='p'>To enable businesses to leverage the power of technology to drive innovation, efficiency, and growth.</p> */}
                 </div>
             )}
             {(selectedState === 'Efficiency') &&(
