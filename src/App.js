@@ -53,6 +53,19 @@ export default function FetchCSVData(props) {
     // })
     return csvData.filter(row => row.State === state).length;
 }
+const [chartWidth, setChartWidth] = useState(window.innerWidth > 1000 ? 500 : 300);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setChartWidth(window.innerWidth > 1000 ? 500 : 400);
+        };
+
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
 
 const idleStateCount = filterDataByState('Idle State (Machine ON)');
 const machineOnCount = filterDataByState('Machine ON (Under Load)');
@@ -195,7 +208,7 @@ const pieChartData = [
             {(selectedState === 'Efficiency') &&(
                 <div>
                     <BarChart
-                            width={600}
+                            width={chartWidth}
                             height={400}
                             data={efficiencybarChartData}
                             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -217,7 +230,7 @@ const pieChartData = [
                         
                     </div>
                     <div className="chart">
-                    <PieChart width={500} height={260}>
+                    <PieChart width={chartWidth} height={260}>
                     <Pie
                         dataKey="value"
                         isAnimationActive={false}
@@ -248,7 +261,7 @@ const pieChartData = [
                     </div>
                     <div className="chart">
                     
-                    <LineChart width={500} height={300} data={chartData}>
+                    <LineChart width={chartWidth} height={300} data={chartData}>
                         <XAxis dataKey="Time"/>
                         <YAxis/>
                         <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
@@ -256,7 +269,7 @@ const pieChartData = [
                         <Tooltip content={<CustomTooltip />} />
                         <Legend />
                     </LineChart>
-                    <BarChart width={500} height={300} data={chartData}>
+                    <BarChart width={chartWidth} height={300} data={chartData}>
                         <XAxis dataKey="Time" />
                         <YAxis />
                         <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
@@ -274,16 +287,17 @@ const pieChartData = [
                         <p>Current vs Time</p>
                     </div>
                     <div className="chart">
-                    
-                    <LineChart width={500} height={300} data={chartData}>
-                        <XAxis dataKey="Time"/>
-                        <YAxis/>
-                        <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
-                        <Line type="monotone" dataKey="Current" stroke="#91dabd" />
-                        <Tooltip content={<CustomTooltip />} />
-                        <Legend />
-                    </LineChart>
-                    <BarChart width={500} height={300} data={chartData}>
+                    <div className='line'>
+                      <LineChart width={chartWidth} height={300} data={chartData}>
+                          <XAxis dataKey="Time"/>
+                          <YAxis/>
+                          <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+                          <Line type="monotone" dataKey="Current" stroke="#91dabd" />
+                          <Tooltip content={<CustomTooltip />} />
+                          <Legend />
+                      </LineChart>
+                      </div>
+                    <BarChart width={chartWidth} height={300} data={chartData}>
                         <XAxis dataKey="Time" />
                         <YAxis />
                         <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
@@ -296,8 +310,8 @@ const pieChartData = [
                 
             )}
             {selectedState === 'Downtime Analysis' && (
-                <div>
-                    <LineChart width={1100} height={300} data={csvData}>
+                <div className='down'>
+                    <LineChart width={chartWidth} height={300} data={csvData}>
                     <XAxis dataKey="Time" />
                     <YAxis />
                     <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
@@ -316,7 +330,7 @@ const pieChartData = [
                     </div>
                     <div className="chart1">
                         <BarChart
-                            width={600}
+                            width={chartWidth}
                             height={400}
                             data={barChartData}
                             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -359,7 +373,7 @@ const pieChartData = [
                     </div>
                     <div className="chart1">
                     <BarChart
-                            width={600}
+                            width={chartWidth}
                             height={400}
                             data={barChartData}
                             margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -371,7 +385,7 @@ const pieChartData = [
                             <Legend />
                             <Bar dataKey="value" fill="#91dabd" />
                         </BarChart>
-                        <PieChart width={400} height={400}>
+                        <PieChart width={chartWidth} height={400}>
                             <Pie
                                 data={pieChartData}
                                 dataKey="value"
