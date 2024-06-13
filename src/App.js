@@ -27,9 +27,8 @@ export default function FetchCSVData(props) {
 
   const calculateAverageCurrent = () => {
     const data = csvData;
-    // console.log("HI");
     const currentValues = data.map(row => parseFloat(row.Current)).filter(val => !isNaN(val));
-    if (currentValues.length > 0) {
+    if (currentValues.length > 1) {
       const sum = currentValues.reduce((acc, val) => acc + val, 0);
       console.log(sum+"SUM");
       const average = sum / currentValues.length;
@@ -42,7 +41,7 @@ export default function FetchCSVData(props) {
   };
 
   useEffect(() => {
-    calculateAverageCurrent();
+    
     const interval = setInterval(calculateAverageCurrent, 5000);
     return () => clearInterval(interval);
   }, []);
@@ -74,6 +73,7 @@ export default function FetchCSVData(props) {
     // const count = csvData.filter(row => {
     //     console.log(row.State);
     // })
+
     return csvData.filter(row => row.State === state).length;
 }
 const [chartWidth, setChartWidth] = useState(window.innerWidth > 1000 ? 500 : 300);
@@ -124,8 +124,6 @@ getLastUpdatedCurrent(csvData);
 
     return () => clearInterval(interval);
 }, []);
-
-
 // const updateCurrentValue = () => {
 //   const data = csvData;
 //   console.log(data.length);
