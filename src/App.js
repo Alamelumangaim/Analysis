@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import {PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar } from 'recharts';
+import { PieChart, Pie, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar } from 'recharts';
 import menu from './images/menu.png';
 import machine from './images/gears-set.png';
 import idle from './images/hourglass.png';
@@ -13,41 +13,31 @@ import analytics from './images/analytics.png';
 import efficiency from './images/efficiency.png';
 import calendar from './images/calendar.png';
 import uparrow from './images/arrow.png';
+
 export default function FetchCSVData(props) {
   const [csvData, setCsvData] = useState([]);
   const [selectedMachine, setSelectedMachine] = useState('');
   const [selectedState, setSelectedState] = useState('');
   const [chartData, setChartData] = useState([]);
   const [machineOffCount, setMachineOffCount] = useState(0);
-  
-//   const [idleStateCount, setIdleStateCount] = useState(0);
-//   const [machineONCount, setmachineONCount] = useState(0);
+  const [latestCurrent, setLatestCurrent] = useState(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const [averageCurrent, setAverageCurrent] = useState(null);
+  const [totalCurrent, setTotalCurrent] = useState(0);
+  const [rowCount, setRowCount] = useState(0);
+  const [averageCurrent, setAverageCurrent] = useState(0);
 
-  const calculateAverageCurrent = () => {
-    const data = csvData;
-    const currentValues = data.map(row => parseFloat(row.Current)).filter(val => !isNaN(val));
-    if (currentValues.length > 0) {
-      const sum = currentValues.reduce((acc, val) => acc + val, 0);
-      console.log(sum+"SUM");
-      const average = sum / currentValues.length;
-      console.log(average+"AVG");
-      setAverageCurrent(average*230);
-      console.log(averageCurrent);
-    } else {
-      setAverageCurrent(null);
+  useEffect(() => {
+    fetchCSVData(); // Initial fetch
+    const intervalId = setInterval(fetchCSVData, 5000); // Fetch every 5 seconds
+    return () => clearInterval(intervalId); // Clean up on unmount
+  }, []);
+
+  useEffect(() => {
+    // Calculate average current whenever rowCount or totalCurrent changes
+    if (rowCount > 0) {
+      setAverageCurrent(totalCurrent / rowCount);
     }
-  };
-
-  useEffect(() => {
-    
-    const interval = setInterval(calculateAverageCurrent, 5000);
-    return () => clearInterval(interval);
-  }, []);
-  useEffect(() => {
-    fetchCSVData();
-  }, []);
+  }, [totalCurrent, rowCount]);
 
   const handleMachineClick = (machine) => {
     setSelectedMachine(machine);
@@ -67,75 +57,48 @@ export default function FetchCSVData(props) {
     } else {
       setMachineOffCount(0);
     }
-   
   };
+
   const filterDataByState = (state) => {
-    // const count = csvData.filter(row => {
-    //     console.log(row.State);
-    // })
-
     return csvData.filter(row => row.State === state).length;
-}
-const [chartWidth, setChartWidth] = useState(window.innerWidth > 1000 ? 500 : 300);
+  };
 
-    useEffect(() => {
-        const handleResize = () => {
-            setChartWidth(window.innerWidth > 1000 ? 500 : 400);
-        };
+  const [chartWidth, setChartWidth] = useState(window.innerWidth > 1000 ? 500 : 300);
 
-        window.addEventListener('resize', handleResize);
+  useEffect(() => {
+    const handleResize = () => {
+      setChartWidth(window.innerWidth > 1000 ? 500 : 400);
+    };
 
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
+    window.addEventListener('resize', handleResize);
 
-const idleStateCount = filterDataByState('Idle State (Machine ON)');
-const machineOnCount = filterDataByState('Machine ON (Under Load)');
-const off = filterDataByState('Machine OFF');
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
 
-const barChartData = [
-    { name: 'Idle state', value: idleStateCount,color:'#ffff00' },
-    { name: 'Load state', value: machineOnCount,color:'#00FF00' },
-    { name: 'Machine OFF', value: off , color: "#FF0000"},
-];
-const efficiencybarChartData = [
-    { name: 'Operator 1', value: 100,color:'#ffff00' },
-    { name: 'Operator 2', value: 75,color:'#00FF00' },
-    { name: 'Operator 3', value: 0 , color: "#FF0000"},
-];
-const pieChartData = [
+  const idleStateCount = filterDataByState('Idle State (Machine ON)');
+  const machineOnCount = filterDataByState('Machine ON (Under Load)');
+  const off = filterDataByState('Machine OFF');
+
+  const barChartData = [
+    { name: 'Idle state', value: idleStateCount, color: '#ffff00' },
+    { name: 'Load state', value: machineOnCount, color: '#00FF00' },
+    { name: 'Machine OFF', value: off, color: "#FF0000" },
+  ];
+
+  const efficiencybarChartData = [
+    { name: 'Operator 1', value: 100, color: '#ffff00' },
+    { name: 'Operator 2', value: 75, color: '#00FF00' },
+    { name: 'Operator 3', value: 0, color: "#FF0000" },
+  ];
+
+  const pieChartData = [
     { name: 'Idle state (Machine ON)', value: idleStateCount, color: '#91dabd' },
     { name: 'Machine ON (under load)', value: machineOnCount, color: '#ffa500' },
     { name: 'Machine OFF', value: off, color: '#FF0000' },
-];
-const [currentValue, setCurrentValue] = useState(null);
+  ];
 
-const getLastUpdatedCurrent = (csvData) => {
-  if (csvData.length === 0) return null;
-  const lastRow = (csvData[csvData.length - 1]);
-  console.log(lastRow.Current);
-  setCurrentValue(lastRow.Current*230);
- 
-};
-useEffect(()=>{
-getLastUpdatedCurrent(csvData);
-  const interval = setInterval(currentValue,5000);
-
-    return () => clearInterval(interval);
-}, []);
-// const updateCurrentValue = () => {
-//   const data = csvData;
-//   console.log(data.length);
-//   const lastRow = data[data.length - 1];
-//   // setCurrentValue(lastRow.Current);
-// };
-
-// useEffect(() => {
-//   setCurrentValue(getLastUpdatedCurrent(csvData));
-//   const interval = setInterval(getLastUpdatedCurrent, 5000);
-//   return () => clearInterval(interval);
-// }, []);
   const preprocessData = (data) => {
     return data.map(row => {
       let color;
@@ -154,20 +117,42 @@ getLastUpdatedCurrent(csvData);
       }
       return { ...row, color };
     });
-  }
+  };
 
   const fetchCSVData = () => {
     const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRMNz4UWSqqVJWkYJTTds7Qos5xS2dAfZpkqUFB-KOlkNMNoZBNXK__pYEvb4egPG5eNWXQOUxB0Wtj/pub?output=csv';
-    
+
     axios.get(csvUrl)
       .then((response) => {
         const parsedCsvData = preprocessData(parseCSV(response.data));
         setCsvData(parsedCsvData);
+        updateLatestCurrent(parsedCsvData);
+        calculateCurrentStats(parsedCsvData);
       })
       .catch((error) => {
         console.error('Error fetching CSV data:', error);
       });
-  }
+  };
+
+  const updateLatestCurrent = (data) => {
+    if (data && data.length > 0) {
+      const lastRow = data[data.length - 1];
+      setLatestCurrent(lastRow.Current);
+    }
+  };
+
+  const calculateCurrentStats = (data) => {
+    if (data && data.length > 0) {
+      let total = 0;
+      data.forEach(row => {
+        if (!isNaN(parseFloat(row.Current))) {
+          total += parseFloat(row.Current);
+        }
+      });
+      setTotalCurrent(total);
+      setRowCount(data.length);
+    }
+  };
 
   function parseCSV(csvText) {
     const rows = csvText.split(/\r?\n/);
@@ -379,11 +364,11 @@ getLastUpdatedCurrent(csvData);
                       </div>
                       <div className='card1'>
                           <p >Power consumed</p>
-                          <p className='power'>{currentValue}</p>
+                          <p className='power'>{latestCurrent*230}</p>
                       </div>
                       <div className='card1'>
                           <p >Average Power consumed</p>
-                          <p className='power'>{averageCurrent !== null ? averageCurrent.toFixed(2) : "Loading..."}</p>
+                          <p className='power'>{averageCurrent !== null ? (averageCurrent*230).toFixed(2) : "Loading..."}</p>
                       </div>
                     </div>
                     <div className="chart1">
