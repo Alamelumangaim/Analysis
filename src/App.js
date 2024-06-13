@@ -410,10 +410,12 @@ export default function FetchCSVData(props) {
                 || selectedMachine === 'Machine 5'
             ) && (
                 <div>
-                    <div className='card'>
-                        <img src={arrow}/>OFF
-                        
-                    </div>
+                  <div className='card-container'>
+                      <div className='card'>
+                          <img src={arrow}/>OFF
+                          
+                      </div>
+                  </div>
                     <div className="chart1">
                     <BarChart
                             width={chartWidth}
