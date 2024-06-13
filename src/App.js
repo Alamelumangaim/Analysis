@@ -27,6 +27,7 @@ export default function FetchCSVData(props) {
 
   const calculateAverageCurrent = () => {
     const data = csvData;
+    // console.log("HI");
     const currentValues = data.map(row => parseFloat(row.Current)).filter(val => !isNaN(val));
     if (currentValues.length > 0) {
       const sum = currentValues.reduce((acc, val) => acc + val, 0);
