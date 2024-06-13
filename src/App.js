@@ -19,10 +19,32 @@ export default function FetchCSVData(props) {
   const [selectedState, setSelectedState] = useState('');
   const [chartData, setChartData] = useState([]);
   const [machineOffCount, setMachineOffCount] = useState(0);
+  
 //   const [idleStateCount, setIdleStateCount] = useState(0);
 //   const [machineONCount, setmachineONCount] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    
+  const [averageCurrent, setAverageCurrent] = useState(null);
+
+  const calculateAverageCurrent = () => {
+    const data = csvData;
+    const currentValues = data.map(row => parseFloat(row.Current)).filter(val => !isNaN(val));
+    if (currentValues.length > 0) {
+      const sum = currentValues.reduce((acc, val) => acc + val, 0);
+      console.log(sum+"SUM");
+      const average = sum / currentValues.length;
+      console.log(average+"AVG");
+      setAverageCurrent(average*230);
+      console.log(averageCurrent);
+    } else {
+      setAverageCurrent(null);
+    }
+  };
+
+  useEffect(() => {
+    calculateAverageCurrent();
+    const interval = setInterval(calculateAverageCurrent, 5000);
+    return () => clearInterval(interval);
+  }, []);
   useEffect(() => {
     fetchCSVData();
   }, []);
@@ -73,12 +95,12 @@ const off = filterDataByState('Machine OFF');
 
 const barChartData = [
     { name: 'Idle state', value: idleStateCount,color:'#ffff00' },
-    { name: 'Machine ON(under load)', value: machineOnCount,color:'#00FF00' },
+    { name: 'Load state', value: machineOnCount,color:'#00FF00' },
     { name: 'Machine OFF', value: off , color: "#FF0000"},
 ];
 const efficiencybarChartData = [
     { name: 'Operator 1', value: 100,color:'#ffff00' },
-    { name: 'Operator 2', value: 0,color:'#00FF00' },
+    { name: 'Operator 2', value: 75,color:'#00FF00' },
     { name: 'Operator 3', value: 0 , color: "#FF0000"},
 ];
 const pieChartData = [
@@ -86,8 +108,35 @@ const pieChartData = [
     { name: 'Machine ON (under load)', value: machineOnCount, color: '#ffa500' },
     { name: 'Machine OFF', value: off, color: '#FF0000' },
 ];
+const [currentValue, setCurrentValue] = useState(null);
+
+const getLastUpdatedCurrent = (csvData) => {
+  if (csvData.length === 0) return null;
+  const lastRow = (csvData[csvData.length - 1]);
+  console.log(lastRow.Current);
+  setCurrentValue(lastRow.Current*230);
+ 
+};
+useEffect(()=>{
+getLastUpdatedCurrent(csvData);
+  const interval = setInterval(currentValue,5000);
+
+    return () => clearInterval(interval);
+}, []);
 
 
+// const updateCurrentValue = () => {
+//   const data = csvData;
+//   console.log(data.length);
+//   const lastRow = data[data.length - 1];
+//   // setCurrentValue(lastRow.Current);
+// };
+
+// useEffect(() => {
+//   setCurrentValue(getLastUpdatedCurrent(csvData));
+//   const interval = setInterval(getLastUpdatedCurrent, 5000);
+//   return () => clearInterval(interval);
+// }, []);
   const preprocessData = (data) => {
     return data.map(row => {
       let color;
@@ -263,7 +312,7 @@ const pieChartData = [
                     
                     <LineChart width={chartWidth} height={300} data={chartData}>
                         <XAxis dataKey="Time"/>
-                        <YAxis/>
+                        <YAxis domain={[0, 30]}/>
                         <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
                         <Line type="monotone" dataKey="Current" stroke="#ffa500" />
                         <Tooltip content={<CustomTooltip />} />
@@ -272,7 +321,7 @@ const pieChartData = [
                     <BarChart width={chartWidth} height={300} data={chartData}>
                         <XAxis dataKey="Time" />
                         <YAxis />
-                        <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+                        <CartesianGrid stroke="#eee" strokeDasharray="5 10" />
                         <Bar dataKey="Current" fill="#ffa500" />
                         <Tooltip content={<CustomTooltip />} />
                         <Legend />
@@ -324,9 +373,19 @@ const pieChartData = [
             
             {selectedState === 'Machine Status' && (selectedMachine === 'Machine 1') && (
                 <div className='status'>
-                    <div className='card'>
-                        <img src={uparrow}/>ON
-                        
+                    <div className='card-container'>
+                      <div className='card'>
+                          <img src={uparrow}/>ON
+                          
+                      </div>
+                      <div className='card1'>
+                          <p >Power consumed</p>
+                          <p className='power'>{currentValue}</p>
+                      </div>
+                      <div className='card1'>
+                          <p >Average Power consumed</p>
+                          <p className='power'>{averageCurrent !== null ? averageCurrent.toFixed(2) : "Loading..."}</p>
+                      </div>
                     </div>
                     <div className="chart1">
                         <BarChart

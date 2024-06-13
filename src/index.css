@@ -44,9 +44,6 @@ code {
     flex-direction: column !important;
     width: 250px;
   }
-  .card{
-    margin-left: 70px;
-  }
   .sidebar{
     height: 100vh !important;
   }
@@ -59,6 +56,12 @@ code {
  .mainPage h1{
   text-align: center;
  }
+ .card-container{
+  display: flex;
+  justify-content: center;
+  flex-direction: column !important;
+  gap: 20px;
+}
 }
 @media (max-width:820px) {
   .chart1{
@@ -266,4 +269,27 @@ body {
   flex-direction: row;
   justify-content: center;
   align-items: center;
+}
+.card-container{
+  display: flex;
+  justify-content: center !important;
+  flex-direction: row;
+  gap: 30px;
+}
+.card1{
+  display: flex;
+  width: 200px;
+  justify-content: center;
+  border: none;
+  flex-direction: column;
+  background-color: #f1f1f1;
+  box-shadow: 0 0 0 2px;
+  border-radius: 10px;
+  text-align: center;
+ 
+}
+.power{
+  color: orange;
+  font-size: medium;
+  font-weight: bold;
 }
