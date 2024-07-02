@@ -104,13 +104,13 @@ export default function FetchCSVData(props) {
       let color;
       switch (row.State) {
         case 'Machine ON (Under Load)':
-          color = '#00FF00'; // Green
+          color = '#ffff00'; // Yellow
           break;
         case 'Machine OFF':
           color = '#FF0000'; // Red
           break;
         case 'Idle State (Machine ON)':
-          color = '#ffff00'; // Yellow
+          color = '#00FF00'; // Green
           break;
         default:
           color = '#000000'; // Default color
